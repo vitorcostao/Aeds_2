@@ -1,9 +1,17 @@
 
 import java.util.Scanner;
 
+/**
+ * Classe para inverter Strings.
+ */
 public class Inverter {
     
-    public static String Inverter(String str){
+    /**
+     * Método para inverter String
+     * @param str String da entrada padrão
+     * @return String invertida
+     */
+    public static String inverter(String str){
 
         // Definir dados
         char[] strInv = str.toCharArray();
@@ -24,27 +32,32 @@ public class Inverter {
         return str2;
     }
 
+    /**
+     * Método principal que lê strings e as invertem.
+     * O programa encerra quando a entrada for "FIM".
+     * @param args Argumentos da linha de comando.
+     */
     public static void main(String[] args) {
         
-        // Definir dados
-        Scanner scanner = new Scanner(System.in);
-        String str, str2;
-
-        // Leitura de dados
-        str = scanner.nextLine();
-
-        while(!str.equals("FIM")){
-
-            // Aplicando função
-            str2 = Inverter(str);
-
-            System.out.println(str2);
-
+        try ( 
+            
+            // Definir dados
+            Scanner scanner = new Scanner(System.in)) {
+            String str, str2;
+            
+            // Leitura de dados
             str = scanner.nextLine();
+            
+            // Looping
+            while(!str.equals("FIM")){
+                
+                // Aplicando função
+                str2 = inverter(str);
+                
+                System.out.println(str2);
+                
+                str = scanner.nextLine();
+            }
         }
-
-        
-
-        scanner.close();
     }
 }

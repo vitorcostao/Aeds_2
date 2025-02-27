@@ -1,43 +1,22 @@
 
-
+/**
+ * Classe para realizar verificação de anagrama.
+ */
 public class Anagrama {
-    
-    public static String removerAcentos(String str) {
-        
-        // Definir dados
-        char[] resultado = new char[str.length()];
 
-        for(int i = 0; i < str.length(); i++){
-
-            char c = str.charAt(i);
-            
-            switch (c) {
-                case 225, 224, 227, 226, 228 -> resultado[i] = 'a'; 
-                case 193, 192, 195, 194, 196 -> resultado[i] = 'A'; 
-                case 233, 232, 234, 235 -> resultado[i] = 'e'; 
-                case 201, 200, 202, 203 -> resultado[i] = 'E'; 
-                case 237, 236, 238, 239 -> resultado[i] = 'i'; 
-                case 205, 204, 206, 207 -> resultado[i] = 'I'; 
-                case 243, 242, 245, 244, 246 -> resultado[i] = 'o';
-                case 211, 210, 213, 212, 214 -> resultado[i] = 'O'; 
-                case 250, 249, 251, 252 -> resultado[i] = 'u'; 
-                case 218, 217, 219, 220 -> resultado[i] = 'U'; 
-                case 231 -> resultado[i] = 'c'; 
-                case 199 -> resultado[i] = 'C'; 
-                default -> resultado[i] = c;
-            }
-        }
-
-        System.out.println(new String(resultado));
-     
-        return new String(resultado);
-    }
-
+    /**
+     * Método para obter uma Substring
+     * @param inicio Índice inicial
+     * @param fim Índice final
+     * @param str String de entrada padrão
+     * @return Substring obtida
+     */
     public static String substr(int inicio, int fim, String str){
 
         // Definir dados
         String sbs = "";
 
+        // Percorrer String
         for(int i = inicio; i < fim; i++){
 
             char c = str.charAt(i);
@@ -47,14 +26,22 @@ public class Anagrama {
         return sbs;
     }
 
+    /**
+     * Método para encontrar posição de caractere
+     * @param c Caractere desejado
+     * @param str String de entrada padrão
+     * @return Posição encontrada
+     */
     public static int FindChar(char c, String str){
 
         // Definir dados
         int len = str.length();
         int j = 0;
 
+        // Percorrer String
         for(int i = 0; i < len; i++){
 
+            // Verificação
             char cs = str.charAt(i);
             if(cs == c){
 
@@ -66,6 +53,11 @@ public class Anagrama {
         return j;
     }
 
+    /**
+     * Método para obter caractere minúsculo
+     * @param c Caractere
+     * @return Caractere em minúsculo
+     */
     public static char Minuscula(char c){
 
         if(c >= 'A' && c <= 'Z'){
@@ -76,12 +68,18 @@ public class Anagrama {
         return c;
     }
 
+    /**
+     * Método para ordenar String
+     * @param str String de entrada padrão 
+     * @return String ordenada
+     */
     public static String Ordenar(String str){
        
         // Definir dados
         char[] arr = str.toCharArray();
         int len = arr.length;
 
+        // Algoritmo de seleção
         for(int i = 0; i < len - 1; i++){
             
             int menor = i;
@@ -93,9 +91,11 @@ public class Anagrama {
                 }
             }
 
+            // Minúsculo
             arr[i] = Minuscula(arr[i]);
             arr[menor] = Minuscula(arr[menor]);
 
+            // Troca
             char temp = arr[i];
             arr[i] = arr[menor];
             arr[menor] = temp;
@@ -104,6 +104,12 @@ public class Anagrama {
         return new String(arr);
     }
 
+    /**
+     * Método para verificar se Strings são anagramas
+     * @param str1 String 1
+     * @param str2 String 2
+     * @return Verificação
+     */
     public static boolean anagrama(String str1, String str2){
 
         if(str1.length() != str2.length()){
@@ -111,12 +117,17 @@ public class Anagrama {
             return false;
         }
 
-        String str1cpy = Ordenar(removerAcentos(str1));
-        String str2cpy = Ordenar(removerAcentos(str2));
+        String cpy1 = Ordenar(str1);
+        String cpy2 = Ordenar(str2);
 
-        return str1cpy.equals(str2cpy);
+        return cpy1.equals(cpy2);
     }
 
+    /**
+     * Método principal que lê strings e verifica propriedade anagrama.
+     * O programa encerra quando a entrada for "FIM".
+     * @param args Argumentos da linha de comando.
+     */
     public static void main(String[] args) {
         
         MyIO.setCharset("ISO-8859-1");
@@ -127,11 +138,14 @@ public class Anagrama {
         // Leitura de dados
         str1 = MyIO.readLine();
         
+        // Looping
         while(!str1.equals("FIM")){
 
+            // Manipulando entrada
             str2 = substr(0, FindChar(' ', str1), str1);
             str3 = substr(FindChar('-', str1) + 2, str1.length(), str1);
             
+            // Verificação
             if(anagrama(str2, str3)){
 
                 MyIO.println("SIM");

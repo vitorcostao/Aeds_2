@@ -3,7 +3,11 @@
 #include<stdbool.h>
 #include<string.h>
 
-
+/**
+ * Método principal para verificar se uma string é um palíndromo.
+ * @param str String a ser verificada.
+ * @return true se a string for um palíndromo, @code false caso contrário.
+ */
 bool isPalindromo(char* str){
 
     // Definir dados
@@ -31,16 +35,24 @@ bool isPalindromo(char* str){
     return resp;
 }
 
+/**
+ * Função principal que lê strings da entrada padrão e verifica se são palíndromos.
+ * O programa encerra quando a entrada for "FIM".
+ * @param args Argumentos da linha de comando.
+ */
 int main(){
 
     // Definir dados
     char str[100];
 
+    // Leitura
     fgets(str, 100, stdin);
     str[strcspn(str, "\n")] = '\0';
 
+    // Looping
     while(strcmp(str, "FIM") != 0){
 
+        // Saída com operador ternário
         printf("%s\n", isPalindromo(str) ? "SIM" : "NAO");
 
         fgets(str, 100, stdin);

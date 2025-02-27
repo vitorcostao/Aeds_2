@@ -4,7 +4,13 @@
 #include<string.h>
 #include<ctype.h>
 
-
+/**
+ * Método recursivo para somar termos de uma String
+ * @param num String de entrada padrão
+ * @param i Índice de controle
+ * @param sum Valor da soma
+ * @return Valor da soma
+ */
 int SomaTermos(char* num, int i, int sum){
 
     // Definir dados
@@ -21,6 +27,11 @@ int SomaTermos(char* num, int i, int sum){
     }
 }
 
+/**
+ * Método principal que lê strings e soma os seus termos.
+ * O programa encerra quando a entrada for "FIM".
+ * @param args Argumentos da linha de comando.
+ */
 int main(){
 
     // Definir dados

@@ -4,19 +4,26 @@
 #include<string.h>
 #include<ctype.h>
 
-
+/**
+ * Método recursivo para verificar se uma string é um palíndromo.
+ * @param str String a ser verificada.
+ * @param i Índice atual da recursão.
+ * @return true se a string for um palíndromo, false caso contrário.
+ */
 bool isPalindromo(char* str, int i, int len){
 
+    // Passo base
     if(i == (len / 2)){
 
         return true;
-    } else {
+    } else { 
 
         if(str[i] != str[len - i - 1]){
 
             return false;
         } else {
-
+            
+            // Passo recursivo
             return isPalindromo(str, i + 1, len);
         }
     }
@@ -31,8 +38,10 @@ int main(){
     fgets(str, 100, stdin);
     str[strcspn(str, "\n")] = '\0';
 
+    // Looping
     while(strcmp(str, "FIM") != 0){
         
+        // Saída com operaor ternário
         printf("%s\n", isPalindromo(str, 0, strlen(str)) ? "SIM" : "NAO");
 
         fgets(str, 100, stdin);

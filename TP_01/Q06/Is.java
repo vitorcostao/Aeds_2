@@ -1,17 +1,35 @@
 import java.util.Scanner;
 
+/**
+ * Classe para verificar condições em Strings.
+ */
 public class Is {
     
+    /**
+     * Método para verificar se é um digito
+     * @param c Caractere
+     * @return Verificação
+     */
     public static boolean IsDigit(char c){
 
         return (c >= '0' && c <= '9');
     }
 
+    /**
+     * Método para verificar se é uma letra
+     * @param c Caractere
+     * @return Verificação
+     */
     public static boolean IsLetter(char c){
 
         return (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z');
     }
 
+    /**
+     * Método para verificar se caractere é uma vogal
+     * @param c Caractere
+     * @return Verificação
+     */
     public static boolean FindVogal(char c){
 
         return (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') ||
@@ -19,14 +37,21 @@ public class Is {
                 c == ' ';
     }
 
+    /**
+     * Método para verificar se há apenas vogais na String
+     * @param str String de entrada padrão
+     * @return Verificação
+     */
     public static boolean isOnlyVogals(String str) {
         
         // Definir dados
         int len = str.length();
         boolean resp = true;
 
+        // Percorrer String
         for(int i = 0; i < len; i++){
 
+            // Verificação
             char c = str.charAt(i);
             if(!FindVogal(c)){
 
@@ -38,6 +63,11 @@ public class Is {
         return resp;
     }
 
+    /**
+     * Método para verificar se há apenas consoantes na String
+     * @param str String de entrada padrão
+     * @return Verificação
+     */
     public static boolean isOnlyConsonants(String str){
 
         // Definir dados
@@ -47,6 +77,7 @@ public class Is {
         // Percorrer string
         for (int i = 0; i < len; i++) {
 
+            // Verificações
             char c = str.charAt(i);
             if(IsLetter(c)){
 
@@ -68,6 +99,11 @@ public class Is {
         return resp;
     }
 
+    /**
+     * Método para verificar se String é um inteiro
+     * @param str String de entrada padrão
+     * @return Verificação
+     */
     public static boolean IsInteger(String str){
 
         // Definir dados
@@ -108,10 +144,14 @@ public class Is {
             }
         }
 
-        // Retorno
         return resp;
     }
 
+    /**
+     * Método para contar quantas vírgulas ou pontos a String possuí
+     * @param str String de entrada padrão
+     * @return Quantia determindad
+     */
     public static int CountPucts(String str){
 
         // Definir dados
@@ -128,12 +168,18 @@ public class Is {
         return cont;
     }
 
+    /**
+     * Método para verificar se String é um número real
+     * @param str String de entrada padrão
+     * @return Verificação
+     */
     public static boolean IsFloat(String str){
 
         // Definir dados
         boolean resp = true;
         int len = str.length();
 
+        // Se tiver mais de um ponto ou vírgula, não é real
         if(CountPucts(str) > 1){
 
             resp = false;
@@ -174,55 +220,61 @@ public class Is {
         return resp;
     }
 
+    /**
+     * Método principal que lê strings e realiza verificações.
+     * O programa encerra quando a entrada for "FIM".
+     * @param args Argumentos da linha de comando.
+     */
     public static void main(String[] args) {
         
         // Definir dados
         String str;
-        Scanner scanner = new Scanner(System.in);
     
-
-        // Leitura de dados
-        str = scanner.nextLine();
-
-        while(!str.equals("FIM")){
-
-            if(isOnlyVogals(str)){
-
-                System.out.print("SIM ");
-            } else {
-
-                System.out.print("NAO ");
-            }
-
-            if(isOnlyConsonants(str)){
-
-                System.out.print("SIM ");
-            } else {
-
-                System.out.print("NAO ");
-            }
+        try ( Scanner scanner = new Scanner(System.in)) {
             
-            if(IsInteger(str)){
-
-                System.out.print("SIM ");
-            } else {
-
-                System.out.print("NAO ");
-            }
-
-            if(IsFloat(str)){
-
-                System.out.println("SIM");
-
-            } else {
-
-                System.out.println("NAO");
-            }
-
+            // Leitura de dados
             str = scanner.nextLine();
+            
+            // Looping
+            while(!str.equals("FIM")){
+                
+                // Verificações
+                if(isOnlyVogals(str)){
+                    
+                    System.out.print("SIM ");
+                } else {
+                    
+                    System.out.print("NAO ");
+                }
+                
+                if(isOnlyConsonants(str)){
+                    
+                    System.out.print("SIM ");
+                } else {
+                    
+                    System.out.print("NAO ");
+                }
+                
+                if(IsInteger(str)){
+                    
+                    System.out.print("SIM ");
+                } else {
+                    
+                    System.out.print("NAO ");
+                }
+                
+                if(IsFloat(str)){
+                    
+                    System.out.println("SIM");
+                    
+                } else {
+                    
+                    System.out.println("NAO");
+                }
+                
+                str = scanner.nextLine();
+            }
         }
-        
-        scanner.close();
 
     }
 }
