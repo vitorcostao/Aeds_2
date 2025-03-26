@@ -1,152 +1,4 @@
-public class Pilha {
-
-    // Definir dados
-    private int n;
-    private int[] array;
-
-    // Construtor
-    public Pilha(int capacidade) throws Exception{
-        
-        if(capacidade <= 0){
-
-            throw new Exception("ERROR: " + capacidade + " is an invalid number to initialize the list");
-        }
-
-        this.n = 0;
-        this.array = new int[capacidade];
-    }
-
-    // Empilhar -> Inserir no fim
-    public void Empilhar(int value) throws Exception{
-
-        if(n >= array.length){
-
-            throw new Exception("ERROR: The stack is full");
-        }
-
-        array[n] = value;
-        n++;
-    }
-
-    // Desempilhar -> Remover no fim
-    public int Desempilhar() throws Exception{
-
-        if(n == 0){
-
-            throw new Exception("ERROR: The stack is empty");
-        }
-
-        return array[--n];
-    }
-
-    // Mostrar
-    public void mostrarPilha() throws Exception{
-
-        if(n == 0){
-
-            throw new Exception("ERROR: The stack is empty");
-        }
-
-        System.out.println("Pilha em ordem de remocao: ");
-
-        for(int i = 0; i < n; i++){
-
-            System.out.print(array[n - i - 1] + " ");
-        }
-
-        System.out.println("");
-    }
-
-    // Mostrar ordem de inserção
-    public void MostrarOrdemInsercao(int i) throws Exception{
-
-        if(n == 0){
-
-            throw new Exception("ERROR: The stack is empty");
-        }
-
-        if(i == n){
-
-        } else {
-
-           System.out.print(array[i] + " "); 
-           MostrarOrdemInsercao(i + 1); 
-        }
-    }
-
-    // Pesquisar elemento em uma pilha
-    public boolean Pesquisar(int ele){
-
-        // Definir dados
-        boolean resp = false;
-
-        for(int i = 0; i < n; i++){
-
-            if(array[i] == ele){
-
-                resp = true;
-                i = n;
-            }
-        }
-
-        return resp;
-    }
-
-    public Lista toLista() throws Exception{
-        
-        Lista lista = new Lista(this.array.length);
-
-        for(int i = 0; i < n; i++){
-
-            lista.InserirFim(array[n - i - 1]);
-        }
-
-        return lista;
-    }
-
-    public static void main(String[] args) throws Exception{
-        
-        // Definir dados
-        Pilha pilha = new Pilha(10);
-
-        pilha.Empilhar(1);
-        pilha.Empilhar(2);
-        pilha.Empilhar(3);
-        pilha.Empilhar(4);
-        pilha.Empilhar(5);
-        pilha.Empilhar(6);
-        pilha.Empilhar(7);
-        pilha.Empilhar(8);
-        pilha.Empilhar(9);
-        pilha.Empilhar(10);
-        pilha.mostrarPilha();
-
-        pilha.Desempilhar();
-        pilha.Desempilhar();
-        pilha.Desempilhar();
-        pilha.Desempilhar();
-        pilha.Desempilhar();
-        pilha.mostrarPilha();
-
-        if(pilha.Pesquisar(5)){
-
-            System.out.println("\nTrue para o elemento " + 5);
-        } else {
-
-            System.out.println("\nFalse para o elemento " + 5);
-        }
-
-        Lista lista = pilha.toLista();
-
-        System.out.println("\nPilha convertida");
-        lista.mostrarLista();
-
-        System.out.println("\n");
-        pilha.MostrarOrdemInsercao(0);
-    }
-}
-
-class Lista {
+public class Lista {
 
     // Dados
     private int n;
@@ -324,5 +176,55 @@ class Lista {
 
             InverterListaR(i + 1);
         }
+    }
+
+    public static void main(String[] args) throws Exception{
+        
+        // Definir dados
+        Lista lista = new Lista(10);
+
+        
+        // Inserir dados
+        lista.InserirInicio(1);
+        lista.InserirFim(3);
+        lista.InserirPos(2, 1);
+
+        // Mostrar Lista
+        System.out.println("Lista com valores inseridos: ");
+        lista.mostrarLista();
+        
+        /*
+            // Pesquisar
+            System.out.println("\n\nPesquisa Sequencial da lista: ");
+            if(lista.Pesquisar(2)){
+
+                System.out.println("Valor " + 2 + " encontrado!");
+            } else {
+
+                System.out.println("Valor " + 2 + " nao encontrado!");
+            }
+
+            // Remover dados
+            System.out.println("\nRemocao dos dados: ");
+            lista.RemoverPos(1);
+            lista.mostrarLista();
+
+            System.out.println("\n");
+
+            lista.RemoverFim();
+            lista.mostrarLista();
+
+            System.out.println("\n");
+
+            lista.RemoverInicio();
+            lista.mostrarLista();
+
+            System.out.println("\n");
+
+            lista.RemoverInicio();
+        */
+
+        lista.InverterListaI();
+        lista.InverterListaR(0);
     }
 }
