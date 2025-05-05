@@ -2,13 +2,14 @@
 #include<stdlib.h>
 #include<string.h>
 #include<stdbool.h>
+#include<time.h>
 
 #define MAX 512
 #define MAX_CAST_LISTED 20
 #define MAX_PARTS 60
 
 
-
+int comparacoes = 0;
 
 //-------------------------------------------------------------------------------------
 
@@ -458,32 +459,32 @@ void setListedIn(Show* show, char** listed, int count){
  * @param original Ponteiro para a struct Show original.
  * @return Um novo Show com os mesmos dados do original.
  */
-Show cloneShow(const Show* original) {
+Show* cloneShow(const Show* original) {
 
     // Definir dados
-    Show novo;
+    Show* novo = (Show*)malloc(sizeof(Show));
 
-    strcpy(novo.showId, original->showId);
-    strcpy(novo.type, original->type);
-    strcpy(novo.title, original->title);
-    strcpy(novo.director, original->director);
-    strcpy(novo.country, original->country);
-    strcpy(novo.dateAdded, original->dateAdded);
-    strcpy(novo.rating, original->rating);
-    strcpy(novo.duration, original->duration);
-    novo.realeseYear = original->realeseYear;
+    strcpy(novo->showId, original->showId);
+    strcpy(novo->type, original->type);
+    strcpy(novo->title, original->title);
+    strcpy(novo->director, original->director);
+    strcpy(novo->country, original->country);
+    strcpy(novo->dateAdded, original->dateAdded);
+    strcpy(novo->rating, original->rating);
+    strcpy(novo->duration, original->duration);
+    novo->realeseYear = original->realeseYear;
 
-    novo.castCount = original->castCount;
+    novo->castCount = original->castCount;
     for(int i = 0; i < original->castCount; i++){
 
-        strcpy(novo.cast[i], original->cast[i]);
+        strcpy(novo->cast[i], original->cast[i]);
     }
 
 
-    novo.listedInCount = original->listedInCount;
+    novo->listedInCount = original->listedInCount;
     for(int i = 0; i < original->listedInCount; i++){
 
-        strcpy(novo.listedIn[i], original->listedIn[i]);
+        strcpy(novo->listedIn[i], original->listedIn[i]);
     }
 
     return novo;
@@ -500,22 +501,22 @@ Show cloneShow(const Show* original) {
  *
  * @param show Ponteiro para a struct Show.
  */
-void imprimirShow(Show show){
+void imprimirShow(Show* show){
 
     printf("=> ");
-    printf("%s ## ", show.showId);
-    printf("%s ## ", show.title);
-    printf("%s ## ", show.type);
-    printf("%s ## ", show.director);
+    printf("%s ## ", show->showId);
+    printf("%s ## ", show->title);
+    printf("%s ## ", show->type);
+    printf("%s ## ", show->director);
 
     printf("[");
 
     // Elenco
-    for(int i = 0; i < show.castCount; i++){
+    for(int i = 0; i < show->castCount; i++){
 
-        printf("%s", show.cast[i]);
+        printf("%s", show->cast[i]);
 
-        if(i < show.castCount - 1){
+        if(i < show->castCount - 1){
 
            printf(", ");
         }
@@ -524,21 +525,21 @@ void imprimirShow(Show show){
 
     printf("] ## ");
 
-    printf("%s ## ", show.country);
-    printf("%s ## ", show.dateAdded);
-    printf("%d ## ", show.realeseYear);
-    printf("%s ## ", show.rating);
-    printf("%s ## ", show.duration);
+    printf("%s ## ", show->country);
+    printf("%s ## ", show->dateAdded);
+    printf("%d ## ", show->realeseYear);
+    printf("%s ## ", show->rating);
+    printf("%s ## ", show->duration);
 
 
     printf("[");
 
     // Categorias
-    for(int i = 0; i < show.listedInCount; i++){
+    for(int i = 0; i < show->listedInCount; i++){
 
-        printf("%s", show.listedIn[i]);
+        printf("%s", show->listedIn[i]);
 
-        if(i < show.listedInCount - 1){
+        if(i < show->listedInCount - 1){
 
            printf(", ");
         }
@@ -816,11 +817,58 @@ Show Ler(const char* in){
 
 
 /**
- * Lê todos os shows de um arquivo CSV.
- * 
+ * Lê os shows de um arquivo CSV pelo título.
+ *
+ * @param title Título do show a ser lido
  * @return Vetor de structs Show alocado dinamicamente.
  */
-Show** LerCsv() {
+Show LerCsv(char* title) {
+    
+    // Definir dados
+    Show resultado; 
+    FILE* csv = fopen("disneyplus.csv", "rt");
+
+    if (!csv) {
+
+        perror("Erro ao abrir o arquivo");
+        return resultado;
+
+    } else {
+
+        char* lixo = malloc(2048 * sizeof(char));
+        fgets(lixo, 2047, csv);
+        free(lixo);
+
+        for(int i = 0; i < 300; i++){
+
+            char* buffer = malloc(2048 * sizeof(char));
+            
+            if(fgets(buffer, 2047, csv) == NULL){
+
+                free(buffer);
+        
+            } else if(strcmp(title, fgets(buffer, 2047, csv)) == 0){
+
+                buffer[strcspn(buffer, "\n")] = '\0';
+                resultado = Ler(buffer); 
+                free(buffer);
+            }
+        }
+
+        fclose(csv);
+        return resultado;
+
+    }
+}
+
+
+
+/**
+ * Lê todos os shows de um arquivo CSV.
+ *
+ * @return Vetor de structs Show alocado dinamicamente.
+ */
+Show** LerCsvCompleto() {
     
     // Definir dados
     Show** resultado = calloc(1369, sizeof(Show*)); 
@@ -912,6 +960,89 @@ void quickSort(int esq, int dir, char arr[][MAX]){
 
 
 
+void swapShows(Show** a, Show** b) {
+ 
+    Show* temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+
+
+
+/**
+ * Ordena um array de ponteiros para Shows por showId usando QuickSort.
+ * 
+ * @param esq Índice inicial
+ * @param dir Índice final
+ * @param array Array de ponteiros para Show
+ */
+void quickSortShowsByTitle(int esq, int dir, Show** array) {
+
+    // Definir dados
+    int i = esq, j = dir;
+    char pivo[MAX];
+    strcpy(pivo, array[(esq + dir) / 2]->title); 
+
+    while (i <= j) {
+
+        while (strcmp(array[i]->title, pivo) < 0) i++;
+        while (strcmp(array[j]->title, pivo) > 0) j--;
+
+        if (i <= j) {
+
+            swapShows(&array[i], &array[j]);
+            i++;
+            j--;
+        }
+    }
+
+    if (esq < j) quickSortShowsByTitle(esq, j, array);
+    if (i < dir) quickSortShowsByTitle(i, dir, array);
+}
+
+
+/**
+ * Pesquisa binária usando título do show como chave, com contagem de comparações e tempo
+ * 
+ * @param title Título do show
+ * @param ArrayShow Conjunto de shows para verificação
+ * @param tamanho Tamanho do conjunto dos shows
+ * @param comparacoes Ponteiro para contador de comparações
+ * @param tempo_execucao Ponteiro para tempo de execução (em segundos)
+ * @return true se o título for encontrado, false caso contrário
+ */
+bool binarySearch(char* title, Show** ArrayShow, int tamanho, int* comparacoes) {
+    
+    // Definir dados
+    int esq = 0;
+    int dir = tamanho - 1;
+
+
+    while (esq <= dir) {
+        int meio = (esq + dir) / 2;
+        (*comparacoes)++;
+
+        int cmp = strcmp(ArrayShow[meio]->title, title);
+
+        if (cmp == 0) {
+
+            return true;
+        } else if (cmp < 0) {
+
+            esq = meio + 1;
+        } else {
+
+            dir = meio - 1;
+        }
+    }
+
+    return false;
+}
+
+
+
+
 
 
 //========================================================== Aplicação
@@ -920,53 +1051,125 @@ void quickSort(int esq, int dir, char arr[][MAX]){
 int main(){
 
     // Definir dados
-    Show** shows = LerCsv();
+    clock_t inicio = clock(); 
+    Show** resultado = LerCsvCompleto();
+    Show** ArrayShow = calloc(300, sizeof(Show*));
+    int j = 0;
 
-    if(shows == NULL){
+    if(resultado == NULL){
       
-        printf("Falha ao carregar os dados.\n");
+        perror("Falha ao carregar os dados.\n");
         return 1;
     }
 
-    // Entrada de dados
-    char* input = malloc(1001 * sizeof(char));
-    if(input == NULL){
 
-        perror("Erro ao alocar memória para input inicial");
+
+    // Entrada de dados 1
+    char* input1 = malloc(1001 * sizeof(char));
+    if(input1 == NULL){
+
+        perror("Erro ao alocar memória para input1 inicial");
         return 1;
     }
+
+    // Entrada de dados 2
+    char* input2 = malloc(1001 * sizeof(char));
+    if(input2 == NULL){
+
+        perror("Erro ao alocar memória para input1 inicial");
+        return 1;
+    }
+
+
+
 
     // Uso do scanf limpando buffer com espaço até um \n ou 10 char´s
-    scanf(" %10[^\n]", input);
+    scanf(" %10[^\n]", input1);
 
-    while(strcmp(input, "FIM") != 0){
+    while(strcmp(input1, "FIM") != 0){
         
         for(int i = 0; i < 1369; i++){
 
-            if(shows[i] != NULL && strcmp(getShowId(shows[i]), input) == 0){
+            if(strcmp(input1, getShowId(resultado[i])) == 0){
 
-                quickSort(0, shows[i]->castCount - 1, shows[i]->cast);
-                quickSort(0, shows[i]->listedInCount - 1, shows[i]->listedIn);
-                imprimirShow(*shows[i]);
+                ArrayShow[j++] = cloneShow(resultado[i]);
+                i = 1369;
             }
         }
 
         // Leitura de dados
-        scanf(" %1000[^\n]", input);
+        scanf(" %1000[^\n]", input1);
     }
 
-    free(input);
+    free(input1);
 
-    // Liberar memória
+
+    // Ordenando para efetuar pesquisa binária
+    quickSortShowsByTitle(0, j - 1, ArrayShow);
+
+
+    // Uso do scanf limpando buffer com espaço até um \n ou 10 char´s
+    scanf(" %1000[^\n]", input2);
+
+    while(strcmp(input2, "FIM") != 0){
+        
+        if(binarySearch(input2, ArrayShow, j, &comparacoes)){
+
+            printf("SIM\n");
+        } else {
+
+            printf("NAO\n");
+        }
+
+        // Leitura de dados
+        scanf(" %1000[^\n]", input2);
+    }
+
+    free(input2);
+
+
+    
     for(int i = 0; i < 1369; i++){
        
-        if(shows[i] != NULL){
+        if(resultado[i] != NULL){
 
-            free(shows[i]);
+            free(resultado[i]);
         }
     }
+    
 
-    free(shows);
+    for(int i = 0; i < 300; i++){
+       
+        if(ArrayShow[i] != NULL){
+
+            free(ArrayShow[i]);
+        }
+    }
+    
+
+    free(resultado);
+    free(ArrayShow);
+
+    clock_t fim = clock();
+
+
+    // Tempo de execução calculado
+    double tempo_execucao = (double)(fim - inicio);
+
+
+    // Arquivo
+    FILE* logFile = fopen("1521300_binaria.txt", "w");
+    
+    if (logFile == NULL) {
+        
+        return 1;
+    }
+
+    fprintf(logFile, "1521300\t");
+    fprintf(logFile, "%d\t", comparacoes);
+    fprintf(logFile, "%f\t", tempo_execucao);
+
+    fclose(logFile);
 
     return 0;
 }
